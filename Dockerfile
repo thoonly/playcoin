@@ -1,9 +1,9 @@
 FROM ubuntu:16.04
 
-COPY ./litecoin.conf /root/.litecoin/litecoin.conf
+COPY ./playcoin.conf /root/.playcoin/playcoin.conf
 
-COPY . /litecoin
-WORKDIR /litecoin
+COPY . /playcoin
+WORKDIR /playcoin
 
 #shared libraries and dependencies
 RUN apt update
@@ -23,13 +23,13 @@ RUN apt-get install -y libminiupnpc-dev
 RUN apt-get install -y libzmq3-dev
 
 #build playcoin source
-RUN make clean
 RUN ./autogen.sh
-RUN ./configure
+RUN ./configure --disable-bip70
+RUN make clean
 RUN make
 RUN make install
 
 #open service port
-EXPOSE 9345 19555
+EXPOSE 9345 9456 19555
 
-CMD ["litecoind", "--printtoconsole"]
+CMD ["playcoind", "--printtoconsole"]
